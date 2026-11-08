@@ -1,0 +1,85 @@
+/*@!Encoding:1252*/
+
+variables
+{
+  message SCM_Command cmdMsg;
+}
+
+on start
+{
+  cmdMsg.OpenBtn = 0;
+  cmdMsg.CloseBtn = 0;
+  cmdMsg.TiltBtn = 0;
+  cmdMsg.OneTouchCmd = 0;
+  output(cmdMsg);
+
+  write("Panel_Sim: initialized");
+}
+
+on signal OpenBtn
+{
+  if ($OpenBtn == 1)
+  {
+    cmdMsg.OpenBtn = 1;
+    cmdMsg.CloseBtn = 0;
+    cmdMsg.TiltBtn = 0;
+    cmdMsg.OneTouchCmd = 0;
+    output(cmdMsg);
+
+    write("Panel_Sim: OPEN");
+
+    cmdMsg.OpenBtn = 0;
+    output(cmdMsg);
+  }
+}
+
+on signal CloseBtn
+{
+  if ($CloseBtn == 1)
+  {
+    cmdMsg.OpenBtn = 0;
+    cmdMsg.CloseBtn = 1;
+    cmdMsg.TiltBtn = 0;
+    cmdMsg.OneTouchCmd = 0;
+    output(cmdMsg);
+
+    write("Panel_Sim: CLOSE");
+
+    cmdMsg.CloseBtn = 0;
+    output(cmdMsg);
+  }
+}
+
+on signal TiltBtn
+{
+  if ($TiltBtn == 1)
+  {
+    cmdMsg.OpenBtn = 0;
+    cmdMsg.CloseBtn = 0;
+    cmdMsg.TiltBtn = 1;
+    cmdMsg.OneTouchCmd = 0;
+    output(cmdMsg);
+
+    write("Panel_Sim: TILT");
+
+    cmdMsg.TiltBtn = 0;
+    output(cmdMsg);
+  }
+}
+
+on signal OneTouchCmd
+{
+  if ($OneTouchCmd == 1)
+  {
+    cmdMsg.OpenBtn = 0;
+    cmdMsg.CloseBtn = 0;
+    cmdMsg.TiltBtn = 0;
+    cmdMsg.OneTouchCmd = 1;
+    output(cmdMsg);
+
+    write("Panel_Sim: ONE-TOUCH CLOSE");
+
+    cmdMsg.OneTouchCmd = 0;
+    output(cmdMsg);
+  }
+}

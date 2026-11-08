@@ -1,0 +1,151 @@
+/*@!Encoding:1252*/
+
+variables
+{
+  message 0x201 cmdMsg;
+  message 0x200 statusMsg;
+  long result;
+}
+
+void SendCommand(byte command)
+{
+  cmdMsg.dlc = 1;
+  cmdMsg.byte(0) = command;
+  output(cmdMsg);
+  TestWaitForTimeout(100);
+}
+
+long ReadStatus()
+{
+  result = TestWaitForMessage(0x200, 1000);
+
+  if (result != 1)
+    return 0;
+
+  result = TestGetWaitEventMsgData(statusMsg);
+
+  if (result != 0)
+    return 0;
+
+  return 1;
+}
+
+long WaitForPosition(byte wanted)
+{
+  long i;
+
+  for (i = 0; i < 60; i++)
+  {
+    if (ReadStatus() == 1)
+    {
+      if (statusMsg.byte(0) == wanted)
+        return 1;
+    }
+  }
+
+  return 0;
+}
+
+void ResetForTest()
+{
+  cmdMsg.dlc = 1;
+  cmdMsg.byte(0) = 0;
+  output(cmdMsg);
+  TestWaitForTimeout(100);
+}
+
+testcase TC01_InitialStatus()
+{
+  TestStep("1", "Initial status");
+
+  ResetForTest();
+
+  if (ReadStatus() == 0)
+  {
+    TestStepFail("2", "No SCM_Status");
+    return;
+  }
+
+  if (statusMsg.byte(0) == 0 && statusMsg.byte(1) == 0)
+    TestStepPass("3", "Initial position=0 and motor=0");
+  else
+    TestStepFail("3", "Initial state is not open and stopped");
+}
+
+testcase TC02_Close()
+{
+  TestStep("1", "Normal CLOSE");
+
+  SendCommand(0x02);
+
+  if (WaitForPosition(100) == 1)
+    TestStepPass("2", "Position reached 100%");
+  else
+    TestStepFail("2", "Position did not reach 100%");
+
+  if (ReadStatus() == 1 && statusMsg.byte(1) == 0)
+    TestStepPass("3", "Motor stopped");
+  else
+    TestStepFail("3", "Motor not stopped");
+}
+
+testcase TC03_Open()
+{
+  TestStep("1", "Normal OPEN");
+
+  SendCommand(0x01);
+
+  if (WaitForPosition(0) == 1)
+    TestStepPass("2", "Position reached 0%");
+  else
+    TestStepFail("2", "Position did not reach 0%");
+
+  if (ReadStatus() == 1 && statusMsg.byte(1) == 0)
+    TestStepPass("3", "Motor stopped");
+  else
+    TestStepFail("3", "Motor not stopped");
+}
+
+testcase TC04_Tilt()
+{
+  TestStep("1", "TILT");
+
+  SendCommand(0x04);
+  TestWaitForTimeout(300);
+
+  if (ReadStatus() == 1 && statusMsg.byte(1) == 0)
+    TestStepPass("2", "Tilt completed and motor stopped");
+  else
+    TestStepFail("2", "Tilt motor did not stop");
+}
+
+testcase TC05_OneTouchClose()
+{
+  TestStep("1", "ONE-TOUCH CLOSE");
+
+  SendCommand(0x08);
+
+  if (WaitForPosition(100) == 1)
+    TestStepPass("2", "One-touch reached 100%");
+  else
+    TestStepFail("2", "One-touch did not reach 100%");
+
+  if (ReadStatus() == 1 && statusMsg.byte(1) == 0)
+    TestStepPass("3", "Motor stopped");
+  else
+    TestStepFail("3", "Motor not stopped");
+
+  if (ReadStatus() == 1 && (statusMsg.byte(2) & 0x02) == 0)
+    TestStepPass("4", "No timeout");
+  else
+    TestStepFail("4", "Unexpected timeout");
+}
+
+void MainTest()
+{
+  TC01_InitialStatus();
+  TC02_Close();
+  TC03_Open();
+  TC04_Tilt();
+  TC05_OneTouchClose();
+}

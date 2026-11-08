@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=19.4.10.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Panel" ControlName="Panel1">
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X087c92bfe09f0e4059e879be2fec73f376d8" ControlName="Static Text 3">
+      <Property Name="Name">X087c92bfe09f0e4059e879be2fec73f376d8</Property>
+      <Property Name="Size">80, 15</Property>
+      <Property Name="Location">167, 505</Property>
+      <Property Name="Text">PinchDetected</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X7439b259e3beae451ae80f5ec1bc6f80e75a" ControlName="Static Text 2">
+      <Property Name="Name">X7439b259e3beae451ae80f5ec1bc6f80e75a</Property>
+      <Property Name="Size">75, 15</Property>
+      <Property Name="Location">284, 505</Property>
+      <Property Name="Text">AbortTimeout</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X69e1f9b8e6423e4f16e8490e1c90d029fe96" ControlName="Static Text 1">
+      <Property Name="Name">X69e1f9b8e6423e4f16e8490e1c90d029fe96</Property>
+      <Property Name="Size">86, 15</Property>
+      <Property Name="Location">218, 409</Property>
+      <Property Name="Text">SunroofPosition</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xfcd3e304e1417e4f24e9370e9b50df222fc4" ControlName="Abort Timeout">
+      <Property Name="Name">Xfcd3e304e1417e4f24e9370e9b50df222fc4</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">284, 459</Property>
+      <Property Name="ReadOnlyControl">True</Property>
+      <Property Name="TabIndex">6</Property>
+      <Property Name="TabStopActive">False</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;255, 152, 152, 152&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;SunroofControlModule;SCM_Status;AbortTimeout;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X53e66f0fe1b20e4268ea726e2f36ce05cd15" ControlName="Pinch Detected">
+      <Property Name="Name">X53e66f0fe1b20e4268ea726e2f36ce05cd15</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">189, 459</Property>
+      <Property Name="ReadOnlyControl">True</Property>
+      <Property Name="TabIndex">5</Property>
+      <Property Name="TabStopActive">False</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;255, 152, 152, 152&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;SunroofControlModule;SCM_Status;PinchDetected;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.MeterControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xf65743ceef0fee4e87e8a0ae6d9f94f5d3a5" ControlName="Meter 1">
+      <Property Name="Name">Xf65743ceef0fee4e87e8a0ae6d9f94f5d3a5</Property>
+      <Property Name="Size">225, 180</Property>
+      <Property Name="Location">156, 229</Property>
+      <Property Name="CustomToolTipText">Sunroof Position</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;SunroofControlModule;SCM_Status;SunroofPosition;1;CAN;;-1;;;Value;;;0</Property>
+      <Property Name="NeedleShape">TriangleWithPoint</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X0306fa19e2514e4e3feb8ece9c8353084028" ControlName="Button 4">
+      <Property Name="Name">X0306fa19e2514e4e3feb8ece9c8353084028</Property>
+      <Property Name="Size">120, 23</Property>
+      <Property Name="Location">300, 173</Property>
+      <Property Name="TabIndex">4</Property>
+      <Property Name="Text">ONE-TOUCH</Property>
+      <Property Name="PressValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;</Property>
+      <Property Name="PressValueVT">1;Lower;1</Property>
+      <Property Name="PressValue">1</Property>
+      <Property Name="ReleaseValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;</Property>
+      <Property Name="ReleaseValueVT">1;Lower;0</Property>
+      <Property Name="ReleaseValue">0</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;Panel_Sim;SCM_Command;OneTouchCmd;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X30d73e7ee9f11e41dfeaca5e617c6c93fc1e" ControlName="Button 3">
+      <Property Name="Name">X30d73e7ee9f11e41dfeaca5e617c6c93fc1e</Property>
+      <Property Name="Size">75, 23</Property>
+      <Property Name="Location">144, 173</Property>
+      <Property Name="TabIndex">3</Property>
+      <Property Name="Text">TILT</Property>
+      <Property Name="PressValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;</Property>
+      <Property Name="PressValueVT">1;Lower;1</Property>
+      <Property Name="PressValue">1</Property>
+      <Property Name="ReleaseValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;</Property>
+      <Property Name="ReleaseValueVT">1;Lower;0</Property>
+      <Property Name="ReleaseValue">0</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;Panel_Sim;SCM_Command;TiltBtn;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X27f9be4fe280ae48a3eaf52e3efa8ba94601" ControlName="Button 2">
+      <Property Name="Name">X27f9be4fe280ae48a3eaf52e3efa8ba94601</Property>
+      <Property Name="Size">88, 23</Property>
+      <Property Name="Location">316, 114</Property>
+      <Property Name="TabIndex">2</Property>
+      <Property Name="Text">CLOSE</Property>
+      <Property Name="PressValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;</Property>
+      <Property Name="PressValueVT">1;Lower;1</Property>
+      <Property Name="PressValue">1</Property>
+      <Property Name="ReleaseValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;</Property>
+      <Property Name="ReleaseValueVT">1;Lower;0</Property>
+      <Property Name="ReleaseValue">0</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;Panel_Sim;SCM_Command;CloseBtn;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X2c3a1f50e06c1e4d5ae877de4b7c3e3455c9" ControlName="Button 1">
+      <Property Name="Name">X2c3a1f50e06c1e4d5ae877de4b7c3e3455c9</Property>
+      <Property Name="Size">75, 23</Property>
+      <Property Name="Location">144, 114</Property>
+      <Property Name="TabIndex">1</Property>
+      <Property Name="Text">OPEN</Property>
+      <Property Name="PressValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;</Property>
+      <Property Name="PressValueVT">1;Lower;1</Property>
+      <Property Name="PressValue">1</Property>
+      <Property Name="ReleaseValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;</Property>
+      <Property Name="ReleaseValueVT">1;Lower;0</Property>
+      <Property Name="ReleaseValue">0</Property>
+      <Property Name="SymbolConfiguration">8;2;SunroofControlModule_Clean;Panel_Sim;SCM_Command;OpenBtn;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">972, 561</Property>
+    <Property Name="Location">0, 0</Property>
+    <Property Name="BackColor">White</Property>
+  </Object>
+</Panel>

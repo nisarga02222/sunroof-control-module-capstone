@@ -1,0 +1,493 @@
+/*@!Encoding:1252*/
+
+/*==============================================================
+  SUNROOF CONTROL MODULE
+  ECU: SunroofControlModule
+
+  CAN INPUT:
+      SCM_Command = 0x201
+
+  CAN OUTPUT:
+      SCM_Status = 0x200
+
+  POSITION:
+      0   = FULLY OPEN
+      100 = FULLY CLOSED
+
+  COMMANDS:
+      OpenBtn       = bit 0
+      CloseBtn      = bit 1
+      TiltBtn       = bit 2
+      OneTouchCmd   = bit 3
+
+  STATUS:
+      SunroofPosition = byte 0
+      MotorCurrent    = byte 1
+      PinchDetected   = byte 2 bit 0
+      AbortTimeout    = byte 2 bit 1
+==============================================================*/
+
+
+variables
+{
+  /*------------------------------------------------------------
+    TIMERS
+  ------------------------------------------------------------*/
+
+  msTimer motorTimer;
+  msTimer timeoutTimer;
+  msTimer pinchClearTimer;
+
+
+  /*------------------------------------------------------------
+    STATUS MESSAGE
+  ------------------------------------------------------------*/
+
+  message SCM_Status stStatus;
+
+
+  /*------------------------------------------------------------
+    STATES
+  ------------------------------------------------------------*/
+
+  int IDLE = 0;
+  int OPENING = 1;
+  int CLOSING = 2;
+  int TILTING = 3;
+  int PINCH_STOP = 4;
+
+
+  /*------------------------------------------------------------
+    PARAMETERS
+  ------------------------------------------------------------*/
+
+  int PINCH_THRESHOLD = 15;
+  int MOTOR_STEP = 2;
+  int ONE_TOUCH_TIMEOUT_MS = 8000;
+  int PINCH_CLEAR_MS = 1000;
+
+
+  /*------------------------------------------------------------
+    CURRENT VALUES
+  ------------------------------------------------------------*/
+
+  int state = 0;
+  int position = 0;
+  int motorCurrent = 0;
+}
+
+
+/*==============================================================
+  SEND STATUS
+==============================================================*/
+
+void SendStatus()
+{
+  stStatus.SunroofPosition.phys = position;
+
+  stStatus.MotorCurrent.phys = motorCurrent;
+
+  output(stStatus);
+}
+
+
+/*==============================================================
+  START
+==============================================================*/
+
+on start
+{
+  /* Stop all timers */
+  cancelTimer(motorTimer);
+  cancelTimer(timeoutTimer);
+  cancelTimer(pinchClearTimer);
+
+
+  /* Initial state */
+  state = 0;
+
+  /* Fully open */
+  position = 0;
+
+  /* Motor stopped */
+  motorCurrent = 0;
+
+
+  /* Clear status flags */
+  stStatus.PinchDetected.phys = 0;
+
+  stStatus.AbortTimeout.phys = 0;
+
+
+  /* Set initial status */
+  stStatus.SunroofPosition.phys = 0;
+
+  stStatus.MotorCurrent.phys = 0;
+
+
+  /* Send initial status */
+  output(stStatus);
+
+
+  write("================================");
+  write(" SCM INITIALIZED");
+  write(" State = IDLE");
+  write(" Position = 0");
+  write(" Motor Current = 0");
+  write("================================");
+}
+
+
+/*==============================================================
+  RECEIVE COMMAND FROM PANEL
+==============================================================*/
+
+on message SCM_Command
+{
+  /*------------------------------------------------------------
+    OPEN
+  ------------------------------------------------------------*/
+
+  if (this.OpenBtn == 1)
+  {
+    if (state == 0)
+    {
+      state = 1;
+
+      motorCurrent = 8;
+
+      stStatus.PinchDetected.phys = 0;
+
+      stStatus.AbortTimeout.phys = 0;
+
+      write("SCM: OPEN command received");
+
+      setTimer(motorTimer, 100);
+    }
+  }
+
+
+  /*------------------------------------------------------------
+    CLOSE
+  ------------------------------------------------------------*/
+
+  if (this.CloseBtn == 1)
+  {
+    if (state == 0)
+    {
+      state = 2;
+
+      motorCurrent = 8;
+
+      stStatus.PinchDetected.phys = 0;
+
+      stStatus.AbortTimeout.phys = 0;
+
+      write("SCM: CLOSE command received");
+
+      setTimer(motorTimer, 100);
+    }
+  }
+
+
+  /*------------------------------------------------------------
+    TILT
+  ------------------------------------------------------------*/
+
+  if (this.TiltBtn == 1)
+  {
+    if (state == 0)
+    {
+      state = 3;
+
+      motorCurrent = 5;
+
+      stStatus.PinchDetected.phys = 0;
+
+      stStatus.AbortTimeout.phys = 0;
+
+      write("SCM: TILT command received");
+
+      setTimer(motorTimer, 100);
+    }
+  }
+
+
+  /*------------------------------------------------------------
+    ONE TOUCH CLOSE
+  ------------------------------------------------------------*/
+
+  if (this.OneTouchCmd == 1)
+  {
+    if (state == 0)
+    {
+      state = 2;
+
+      motorCurrent = 8;
+
+      stStatus.PinchDetected.phys = 0;
+
+      stStatus.AbortTimeout.phys = 0;
+
+      write("SCM: ONE TOUCH CLOSE command received");
+
+      /* Start closing */
+      setTimer(motorTimer, 100);
+
+      /* Start 8 second timeout */
+      setTimer(timeoutTimer, 8000);
+    }
+  }
+}
+
+
+/*==============================================================
+  MOTOR TIMER
+==============================================================*/
+
+on timer motorTimer
+{
+  /*------------------------------------------------------------
+    OPENING
+  ------------------------------------------------------------*/
+
+  if (state == 1)
+  {
+    position = position - 2;
+
+    motorCurrent = 8;
+
+
+    /* Fully open */
+    if (position <= 0)
+    {
+      position = 0;
+
+      state = 0;
+
+      /* Motor STOP */
+      motorCurrent = 0;
+
+      write("SCM: OPEN complete");
+    }
+  }
+
+
+  /*------------------------------------------------------------
+    CLOSING
+  ------------------------------------------------------------*/
+
+  if (state == 2)
+  {
+    position = position + 2;
+
+    motorCurrent = 8;
+
+
+    /* Fully closed */
+    if (position >= 100)
+    {
+      position = 100;
+
+      state = 0;
+
+      /* Motor STOP */
+      motorCurrent = 0;
+
+      /* Cancel One Touch timeout */
+      cancelTimer(timeoutTimer);
+
+      write("SCM: CLOSE complete");
+    }
+  }
+
+
+  /*------------------------------------------------------------
+    TILT
+  ------------------------------------------------------------*/
+
+  if (state == 3)
+  {
+    motorCurrent = 5;
+
+    write("SCM: TILT operation");
+
+    /* Tilt completed */
+    state = 0;
+
+    /* Motor STOP */
+    motorCurrent = 0;
+
+    write("SCM: TILT complete");
+  }
+
+
+  /*------------------------------------------------------------
+    PINCH DETECTION
+  ------------------------------------------------------------*/
+
+  if (motorCurrent > 15)
+  {
+    if (state != 0)
+    {
+      state = 4;
+
+      stStatus.PinchDetected.phys = 1;
+
+      /* Motor STOP */
+      motorCurrent = 0;
+
+      /* Cancel timeout */
+      cancelTimer(timeoutTimer);
+
+      write("SCM: PINCH DETECTED");
+
+      /* Clear pinch after 1 second */
+      setTimer(pinchClearTimer, 1000);
+    }
+  }
+
+
+  /*------------------------------------------------------------
+    UPDATE STATUS
+  ------------------------------------------------------------*/
+
+  stStatus.SunroofPosition.phys = position;
+
+  stStatus.MotorCurrent.phys = motorCurrent;
+
+
+  output(stStatus);
+
+
+  /*------------------------------------------------------------
+    CONTINUE MOTOR OPERATION
+  ------------------------------------------------------------*/
+
+  if (state == 1)
+  {
+    setTimer(motorTimer, 100);
+  }
+
+  if (state == 2)
+  {
+    setTimer(motorTimer, 100);
+  }
+
+  if (state == 3)
+  {
+    setTimer(motorTimer, 100);
+  }
+}
+
+
+/*==============================================================
+  ONE TOUCH TIMEOUT
+==============================================================*/
+
+on timer timeoutTimer
+{
+  if (state == 2)
+  {
+    /* Stop closing */
+    state = 0;
+
+    /* Stop motor */
+    motorCurrent = 0;
+
+
+    /* Set timeout flag */
+    stStatus.AbortTimeout.phys = 1;
+
+
+    /* Update status */
+    stStatus.SunroofPosition.phys = position;
+
+    stStatus.MotorCurrent.phys = 0;
+
+
+    /* Send status */
+    output(stStatus);
+
+
+    write("================================");
+    write(" SCM: ONE TOUCH TIMEOUT");
+    write(" Closing aborted");
+    write(" Motor stopped");
+    write("================================");
+  }
+}
+
+
+/*==============================================================
+  PINCH CLEAR TIMER
+==============================================================*/
+
+on timer pinchClearTimer
+{
+  if (state == 4)
+  {
+    /* Return to IDLE */
+    state = 0;
+
+
+    /* Clear pinch */
+    stStatus.PinchDetected.phys = 0;
+
+
+    /* Send status */
+    output(stStatus);
+
+
+    write("SCM: PINCH CLEARED");
+
+    write("SCM: State = IDLE");
+  }
+}
+
+
+/*==============================================================
+  RESET
+==============================================================*/
+
+on key 'r'
+{
+  /* Cancel timers */
+  cancelTimer(motorTimer);
+
+  cancelTimer(timeoutTimer);
+
+  cancelTimer(pinchClearTimer);
+
+
+  /* Reset */
+  state = 0;
+
+  position = 0;
+
+  motorCurrent = 0;
+
+
+  /* Clear flags */
+  stStatus.PinchDetected.phys = 0;
+
+  stStatus.AbortTimeout.phys = 0;
+
+
+  /* Update status */
+  stStatus.SunroofPosition.phys = 0;
+
+  stStatus.MotorCurrent.phys = 0;
+
+
+  /* Send status */
+  output(stStatus);
+
+
+  write("================================");
+  write(" SCM RESET");
+  write(" Position = 0");
+  write(" Motor = 0");
+  write(" State = IDLE");
+  write("================================");
+}
